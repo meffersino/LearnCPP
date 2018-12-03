@@ -1,1 +1,1 @@
-This repo is for learning C++
+This repo is for learning C++ - Michael
