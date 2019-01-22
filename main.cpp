@@ -3,26 +3,24 @@
 #include <sstream>
 #include <string>
 #include <list>
+#include <set>
 
 using namespace std;
 
 
-list<int> * processFile(list<int> * output, ifstream * infile) {
-    cout << "1" << endl;
-    
+set<int> * reachedFrequencies;
+
+void checkDuplicateFrequencies(int value);
+
+list<int> * processFile(list<int> * output, ifstream * infile) {    
     string line;
     while(getline(*infile, line))
     {
-        cout << "2" << endl;
         istringstream iss(line);
-        cout << "3" << endl;
         int value;
         if(iss >> value)
         {
-            cout << "4" << endl;
-            cout << "value: " << value << endl;
             output->push_back(value);
-            cout << "5" << endl;
         }
     }
 
@@ -33,23 +31,48 @@ list<int> * processFile(list<int> * output, ifstream * infile) {
 int addValuesFromList(list<int> * list, int startValue)
 {
     int result = startValue;
-    for(auto const& i : *list)
-    {
-        result += i;
+    bool notFound = true;
+    while(notFound){
+        for(auto const& i : *list)
+        {
+            try {
+                result += i;
+                checkDuplicateFrequencies(result);
+            } catch(const char* msg) {
+                notFound = false;
+                throw &result;
+            }
+        }
     }
-
 
     return result;
 }
 
+void checkDuplicateFrequencies(int value)
+{
+    if(reachedFrequencies->find(value) != reachedFrequencies->end())
+    {
+        throw "found";
+    } else {
+        reachedFrequencies->insert(value);
+    }
+}
+
 int main() {
+    reachedFrequencies = new set<int>;
     ifstream infile("input.txt");
     list<int> * processedList = new list<int>;
     processedList = processFile(processedList, &infile);
     int startValue = 0;
-    int result = addValuesFromList(processedList, startValue);
+    int result = 0;
+    try {
+        result = addValuesFromList(processedList, startValue);
+    } catch(int * value) {
+        cout << *value << endl;
+        cout << "result: " << *value << endl;
+        result = *value;
+    }
 
-    cout << "result: " << result << endl;
     return 0;
 
 }
