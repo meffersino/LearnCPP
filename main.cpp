@@ -69,7 +69,7 @@ int main() {
         result = addValuesFromList(processedList, startValue);
     } catch(int * value) {
         cout << *value << endl;
-        cout << "result: " << *value << endl;
+        cout << *value << endl;
         result = *value;
     }
 
